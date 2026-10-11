@@ -22,7 +22,7 @@ Target: Product companies , HFTs , AI/ML Engineer roles , no service based compa
 def fetch_and_filter_jobs():
     print("Scraping job listings...")
     jobs = scrape_jobs(
-        site_name=["linkedin", "indeed", "glassdoor","naukri.com"],
+        site_name=["linkedin", "indeed", "glassdoor","naukri"],
         search_term="Software Engineer C++ Quantitative Developer AI Engineer  ML Enginner",
         location="India",
         results_wanted=20,
