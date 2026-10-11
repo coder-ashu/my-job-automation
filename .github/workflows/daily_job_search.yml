@@ -3,7 +3,7 @@ name: Daily Job Search Pipeline
 on:
   schedule:
     # Runs at 20:00 UTC daily (1:30 AM IST)
-    - cron: '0 20 * * *'
+    - cron: '7 21 * * *'
   workflow_dispatch: # Allows manual run anytime from GitHub UI
 
 jobs:
