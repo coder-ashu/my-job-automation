@@ -8,7 +8,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 # 1. Setup Gemini API
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = genai.GenerativeModel("gemini-3.5-flash")
 
 # Master Profile Baseline
 USER_BASELINE = """
