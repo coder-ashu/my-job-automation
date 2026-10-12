@@ -1,5 +1,5 @@
 python-jobspy
-google-generativeai
+huggingface_hub
 gspread
 oauth2client
 pandas
