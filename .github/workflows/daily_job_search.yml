@@ -27,4 +27,4 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GCP_SERVICE_ACCOUNT_JSON: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
-        run: python job_pipeline.py
+        run: python job_search.py
