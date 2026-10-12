@@ -3,3 +3,4 @@ huggingface_hub
 gspread
 oauth2client
 pandas
+telethon
