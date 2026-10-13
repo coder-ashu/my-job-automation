@@ -189,10 +189,10 @@ def fetch_and_filter_jobs():
 
     # Free models currently active on OpenRouter (in priority order with smart router fallback)
     MODELS_TO_TRY = [
+        "nvidia/nemotron-3-super-120b-a12b:free",
+        "nvidia/nemotron-3-ultra-550b-a55b:free",
         "google/gemma-4-31b-it:free",
         "google/gemma-4-26b-a4b-it:free",
-        "nvidia/nemotron-3.5-lightning:free",
-        "nvidia/nemotron-3-super-120b-a12b:free",
         "openrouter/free"
     ]
 
