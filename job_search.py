@@ -437,7 +437,7 @@ def update_google_sheet(job_list):
 if __name__ == "__main__":
     job_results = fetch_and_filter_jobs()
     update_google_sheet(job_results)
-        print(f"Error updating Google Sheets: {e}")
+    print(f"Error updating Google Sheets: {e}")
 
 if __name__ == "__main__":
     job_results = fetch_and_filter_jobs()
