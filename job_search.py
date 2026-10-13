@@ -160,7 +160,7 @@ def fetch_and_filter_jobs():
         print("Warning: HF_TOKEN is not set. Inference calls may be rate-limited or fail.")
 
     client = InferenceClient(
-        model="Qwen/Qwen2.5-7B-Instruct",
+        model="meta-llama/Llama-3.3-70B-Instruct",
         token=hf_token
     )
 
