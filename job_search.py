@@ -392,7 +392,7 @@ def fetch_and_filter_jobs():
         try:
             # NEW: Call OpenRouter using the standard OpenAI format
             response = client.chat.completions.create(
-                model="meta-llama/llama-3.1-8b-instruct:free", # The :free suffix guarantees zero cost
+                model="nvidia/nemotron-3-ultra-550b-a55b:free", # The :free suffix guarantees zero cost
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
                 max_tokens=400
