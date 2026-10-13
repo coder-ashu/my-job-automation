@@ -109,32 +109,53 @@ def fetch_and_filter_jobs():
         }}
         """
 
-        try:
-            # NEW: Call OpenRouter using the standard OpenAI format
-            response = client.chat.completions.create(
-                model="nvidia/nemotron-3-ultra-550b-a55b:free", # The :free suffix guarantees zero cost
-                messages=[{"role": "user", "content": prompt}],
-                temperature=0.1,
-                max_tokens=400
-            )
-            
-            output_text = response.choices[0].message.content
-            output_text = output_text.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-            
-            result = json.loads(output_text)
+        MODELS_TO_TRY = [
+            "nvidia/nemotron-3-ultra-550b-a55b:free",
+            "meta-llama/llama-3.3-70b-instruct:free",
+            "google/gemini-2.0-flash-exp:free"
+        ]
 
-            if result.get("is_fit", False):
-                processed_jobs.append({
-                    "Date": pd.Timestamp.now().strftime("%Y-%m-%d"),
-                    "Company": company,
-                    "Title": title,
-                    "Apply Link": job_url,
-                    "Estimated CTC Match": result.get("estimated_ctc_match", "N/A"),
-                    "Tailored Highlights": "\n".join(result.get("tailored_resume_bullets", [])),
-                    "Status": "Pending Application"
-                })
-        except Exception as e:
-            print(f"Error processing {title} at {company}: {e}")
+        result = None
+        for model_name in MODELS_TO_TRY:
+            try:
+                response = client.chat.completions.create(
+                    model=model_name,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.1,
+                    max_tokens=800
+                )
+                
+                if not response or not getattr(response, "choices", None):
+                    err = getattr(response, "error", None) or (response.model_extra.get("error") if hasattr(response, "model_extra") and response.model_extra else None)
+                    print(f"[{model_name}] OpenRouter returned no choices: {err}")
+                    continue
+
+                choice = response.choices[0]
+                if not choice.message or not choice.message.content:
+                    print(f"[{model_name}] Empty message content received.")
+                    continue
+
+                output_text = choice.message.content.strip()
+                start_idx = output_text.find("{")
+                end_idx = output_text.rfind("}")
+                if start_idx != -1 and end_idx != -1:
+                    result = json.loads(output_text[start_idx:end_idx + 1])
+                    break
+                else:
+                    print(f"[{model_name}] No JSON block found in output: {output_text[:100]}")
+            except Exception as e:
+                print(f"Error calling {model_name} for {title} at {company}: {e}")
+
+        if result and result.get("is_fit", False):
+            processed_jobs.append({
+                "Date": pd.Timestamp.now().strftime("%Y-%m-%d"),
+                "Company": company,
+                "Title": title,
+                "Apply Link": job_url,
+                "Estimated CTC Match": result.get("estimated_ctc_match", "N/A"),
+                "Tailored Highlights": "\n".join(result.get("tailored_resume_bullets", [])),
+                "Status": "Pending Application"
+            })
 
         # Rate limit protection
         time.sleep(3) 
@@ -144,7 +165,7 @@ def fetch_and_filter_jobs():
 def update_google_sheet(job_list):
     if not job_list:
         return
-    scope = ["[https://spreadsheets.google.com/feeds](https://spreadsheets.google.com/feeds)", "[https://www.googleapis.com/auth/drive](https://www.googleapis.com/auth/drive)"]
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds_dict = json.loads(os.getenv("GCP_SERVICE_ACCOUNT_JSON"))
     creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     sheet_client = gspread.authorize(creds)
