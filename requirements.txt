@@ -1,7 +1,6 @@
 python-jobspy
-huggingface_hub
+openai
 gspread
 oauth2client
 pandas
 telethon
-python-dotenv
