@@ -135,6 +135,7 @@ def scrape_telegram_jobs():
                                 })
                 except Exception as e:
                     print(f"Error reading channel {channel}: {e}")
+        print(telegram_jobs)
     except Exception as e:
         print(f"Failed to authenticate Telegram: {e}")
 
